@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-
 import com.google.zxing.Result;
-
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class CodeScanner extends ActionBarActivity implements ZXingScannerView.ResultHandler {
@@ -37,7 +35,7 @@ public class CodeScanner extends ActionBarActivity implements ZXingScannerView.R
     @Override
     public void handleResult(Result rawResult) {
         // Do something with the result here
-        if(rawResult != null) {
+        if (rawResult != null) {
             Log.v("Scanner result: ", rawResult.getText()); // Prints scan results
             Log.v("Scanner format: ", rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
             Intent intent = new Intent();

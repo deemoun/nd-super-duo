@@ -38,11 +38,10 @@
 
         <service
             android:name=".services.BookService"
-            android:exported="false"></service>
+            android:exported="false"/>
 
         <activity
             android:name=".CodeScanner"
-            android:parentActivityName=".MainActivity"
             android:label="@string/barcodeScanner">
         </activity>
     </application>

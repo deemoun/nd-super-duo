@@ -1,5 +1,7 @@
 package barqsoft.footballscores;
 
+import android.content.res.Resources;
+
 /**
  * Created by yehya khaled on 3/3/2015.
  */
@@ -10,46 +12,50 @@ public class Utilies
     public static final int CHAMPIONS_LEAGUE = 362;
     public static final int PRIMERA_DIVISION = 358;
     public static final int BUNDESLIGA = 351;
+    public static Resources resources;
+
     public static String getLeague(int league_num)
     {
+        resources = Resources.getSystem();
         switch (league_num)
         {
-            case SERIE_A : return "Seria A";
-            case PREMIER_LEGAUE : return "Premier League";
-            case CHAMPIONS_LEAGUE : return "UEFA Champions League";
-            case PRIMERA_DIVISION : return "Primera Division";
-            case BUNDESLIGA : return "Bundesliga";
-            default: return "Not known League Please report";
+            case SERIE_A : return resources.getString(R.string.seriaa);
+            case PREMIER_LEGAUE : return resources.getString(R.string.premierleague);
+            case CHAMPIONS_LEAGUE : return resources.getString(R.string.champions_league);
+            case PRIMERA_DIVISION : return resources.getString(R.string.primeradivison);
+            case BUNDESLIGA : return resources.getString(R.string.bundesliga);
+            default: return resources.getString(R.string.notknownleague);
         }
     }
     public static String getMatchDay(int match_day,int league_num)
     {
+        resources = Resources.getSystem();
         if(league_num == CHAMPIONS_LEAGUE)
         {
             if (match_day <= 6)
             {
-                return "Group Stages, Matchday : 6";
+                return resources.getString(R.string.groupstages_matchday);
             }
             else if(match_day == 7 || match_day == 8)
             {
-                return "First Knockout round";
+                return resources.getString(R.string.first_knockout_round);
             }
             else if(match_day == 9 || match_day == 10)
             {
-                return "QuarterFinal";
+                return resources.getString(R.string.quarter_final);
             }
             else if(match_day == 11 || match_day == 12)
             {
-                return "SemiFinal";
+                return resources.getString(R.string.semi_final);
             }
             else
             {
-                return "Final";
+                return resources.getString(R.string.final_text);
             }
         }
         else
         {
-            return "Matchday : " + String.valueOf(match_day);
+            return resources.getString(R.string.matchday) + String.valueOf(match_day);
         }
     }
 

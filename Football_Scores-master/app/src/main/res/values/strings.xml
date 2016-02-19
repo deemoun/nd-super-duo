@@ -10,10 +10,13 @@
     <string name="tomorrow">Tomorrow</string>
     <string name="champions_league">UEFA Champions League</string>
     <string name="bundesliga">Bundesliga</string>
+    <string name="groupstages_matchday">Group Stages, Matchday : 6</string>
     <string name="premierleague">Premier League</string>
     <string name="primeradivison">Primera Division</string>
     <string name="seriaa">Serie A</string>
+    <string name="notknownleague">Not known League Please report</string>
     <string name="matchday_text">Match day</string>
+    <string name="matchday">Matchday : </string>
     <string name="group_stage_text">Group stages</string>
     <string name="first_knockout_round">First knockout round</string>
     <string name="quarter_final">Quarter Final</string>

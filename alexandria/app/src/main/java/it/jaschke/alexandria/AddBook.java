@@ -29,7 +29,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private EditText ean;
     private final int LOADER_ID = 1;
     private View rootView;
-    private final String EAN_CONTENT="eanContent";
+    private final String EAN_CONTENT = "eanContent";
     private static final String SCAN_FORMAT = "scanFormat";
     private static final String SCAN_CONTENTS = "scanContents";
     private static final int BARCODE_CAPTURE = 9001;
@@ -39,14 +39,13 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private String mScanContents = "Contents:";
 
 
-
-    public AddBook(){
+    public AddBook() {
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(ean!=null) {
+        if (ean != null) {
             outState.putString(EAN_CONTENT, ean.getText().toString());
         }
     }
@@ -70,12 +69,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
             @Override
             public void afterTextChanged(Editable s) {
-                String ean =s.toString();
+                String ean = s.toString();
                 //catch isbn10 numbers
-                if(ean.length()==10 && !ean.startsWith("978")){
-                    ean="978"+ean;
+                if (ean.length() == 10 && !ean.startsWith("978")) {
+                    ean = "978" + ean;
                 }
-                if(ean.length()<13){
+                if (ean.length() < 13) {
                     clearFields();
                     return;
                 }
@@ -84,7 +83,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 bookIntent.putExtra(BookService.EAN, ean);
                 bookIntent.setAction(BookService.FETCH_BOOK);
                 Utils utils = new Utils();
-                if(utils.isNetworkAvailable(getContext())){
+                if (utils.isNetworkAvailable(getContext())) {
                     getActivity().startService(bookIntent);
                     AddBook.this.restartLoader();
                 } else {
@@ -125,7 +124,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             }
         });
 
-        if(savedInstanceState!=null){
+        if (savedInstanceState != null) {
             ean.setText(savedInstanceState.getString(EAN_CONTENT));
             ean.setHint("");
         }
@@ -133,18 +132,18 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         return rootView;
     }
 
-    private void restartLoader(){
+    private void restartLoader() {
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if(ean.getText().length()==0){
+        if (ean.getText().length() == 0) {
             return null;
         }
-        String eanStr= ean.getText().toString();
-        if(eanStr.length()==10 && !eanStr.startsWith("978")){
-            eanStr="978"+eanStr;
+        String eanStr = ean.getText().toString();
+        if (eanStr.length() == 10 && !eanStr.startsWith("978")) {
+            eanStr = "978" + eanStr;
         }
         return new CursorLoader(
                 getActivity(),
@@ -161,7 +160,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if (!data.moveToFirst()) {
             return;
         }
-
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         ((TextView) rootView.findViewById(R.id.bookTitle)).setText(bookTitle);
 
@@ -169,11 +167,15 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText(bookSubTitle);
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
-        ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
-        ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",","\n"));
+        if (authors != null) {
+            String[] authorsArr = authors.split(",");
+            ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
+            ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",", "\n"));
+        } else {
+            Log.v("BookDetail", "This book has no author");
+        }
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-        if(Patterns.WEB_URL.matcher(imgUrl).matches()){
+        if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
             new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
             rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
         }
@@ -190,7 +192,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     }
 
-    private void clearFields(){
+    private void clearFields() {
         ((TextView) rootView.findViewById(R.id.bookTitle)).setText("");
         ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText("");
         ((TextView) rootView.findViewById(R.id.authors)).setText("");
@@ -207,36 +209,41 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         // check if the request code is same as what is passed  here it is 2
-        if(requestCode==BARCODE_CAPTURE)
-        {
+        if (requestCode == BARCODE_CAPTURE) {
             try {
-                mScanContents=data.getStringExtra("barCode");
-                mScanFormat=data.getStringExtra("barCodeFormat");
-                ean.setText(mScanContents);
+                // Check if barcode and barcode format are not null
 
-                // Once we have a barcode, start service
+                mScanContents = data.getStringExtra("barCode");
+                mScanFormat = data.getStringExtra("barCodeFormat");
 
-                Intent barcodeLookup = new Intent(getActivity(), BookService.class);
-                barcodeLookup.putExtra(BookService.EAN, mScanContents);
-                barcodeLookup.setAction(BookService.FETCH_BOOK);
-                Utils utils = new Utils();
-                if(utils.isNetworkAvailable(getContext())){
-                    if(mScanFormat.equals("EAN_13")) {
-                        getActivity().startService(barcodeLookup);
-                        AddBook.this.restartLoader();
-                    } else {
-                        Toast.makeText(getContext(), getText(R.string.wrong_barcode_format), Toast.LENGTH_SHORT).show();
-                    }
+                if (mScanContents.isEmpty() || mScanFormat.isEmpty()) {
+                    Toast.makeText(getContext(), "Error during scan", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), getText(R.string.offline), Toast.LENGTH_SHORT).show();
-                }
+                    ean.setText(mScanContents);
 
-            } catch (NullPointerException e){
-                Log.v(LOG_TAG, "No barcode was provided" + e);
+                    // Once we have a barcode, start service
+
+                    Intent barcodeLookup = new Intent(getActivity(), BookService.class);
+                    barcodeLookup.putExtra(BookService.EAN, mScanContents);
+                    barcodeLookup.setAction(BookService.FETCH_BOOK);
+                    Utils utils = new Utils();
+                    if (utils.isNetworkAvailable(getContext())) {
+                        if (mScanFormat.equals("EAN_13")) {
+                            getActivity().startService(barcodeLookup);
+                            AddBook.this.restartLoader();
+                        } else {
+                            Toast.makeText(getContext(), getText(R.string.wrong_barcode_format), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getContext(), getText(R.string.offline), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } catch (NullPointerException e) {
+                Log.v(LOG_TAG, "No barcode was provided" + e.getLocalizedMessage());
             }
         }
     }
