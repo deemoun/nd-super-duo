@@ -21,6 +21,16 @@
     <string name="first_knockout_round">First knockout round</string>
     <string name="quarter_final">Quarter Final</string>
     <string name="semi_final">Semi Final</string>
+    <string name="arsenal_fc">Arsenal London FC</string>
+    <string name="manchester_fc">Manchester United FC</string>
+    <string name="swansea_city">Swansea City</string>
+    <string name="leicester_city">Leicester City</string>
+    <string name="everton_fc">Everton FC</string>
+    <string name="westham_united_fc">West Ham United FC</string>
+    <string name="tottenham">Tottenham Hotspur FC</string>
+    <string name="westbromwich">West Bromwich Albion</string>
+    <string name="sunderland">Sunderland AFC</string>
+    <string name="strokecity">Stoke City FC</string>
     <string name="final_text">Final</string>
     <string name="share_text">Share</string>
     <string name="about">About</string>

@@ -73,6 +73,7 @@ public class Utilies
 
     public static int getTeamCrestByTeamName (String teamname)
     {
+        resources = Resources.getSystem();
         if (teamname==null){return R.drawable.no_icon;}
         switch (teamname)
         { //This is the set of icons that are currently in the app. Feel free to find and add more
